@@ -1,4 +1,5 @@
 #Python Function
+import random
 
 #1
 def convert(cur):
@@ -23,7 +24,7 @@ def convet_f_to_c(far):
 
 F = int(input("Input a Fahrenheit degree to convert: "))
 print(convet_f_to_c(F), '\n')
-import random
+
 
 
 #3
