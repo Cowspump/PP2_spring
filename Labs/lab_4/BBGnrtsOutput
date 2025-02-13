@@ -1,0 +1,15 @@
+Enter your N: 10
+squares of nums 1 - N:
+[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+
+Enter last N: 10
+only even nums between 1 and N: [2, 4, 6, 8, 10]
+
+Enter your N: 10
+nums such that divides by three and four: [0]
+
+squares using square generator such that apply a and b arguments
+1 4 9 16 25 36 49 64 81 100
+
+Nums from N to 0 using 'from_n_to_0(n)' generator
+10 9 8 7 6 5 4 3 2 1 0 Thats all.
