@@ -13,18 +13,23 @@ if __name__ == "__main__":
 
 #second
 
-def only_evens(n):
+def only_even(a):
 
-    for num in range(1,n+1):
-        if num % 2 == 0:
-            yield  num
+
+    for i in range(1,a+1):
+        if i != a and i % 2 == 0:
+            yield f"{i},"
+        elif i == a:
+            yield f"{i}"
+
 
 if __name__ == "__main__":
 
-    N = int(input("Enter last N: "))
-    evens = [i for i in only_evens(N)]
+    print("Even numbers separated by comma using generator")
+    for i in only_even(10):
+        print(i, end=" ")
 
-    print(f"only even nums between 1 and N: {evens}",'\n')
+    print('\n' * 2)
 
 
 #third
@@ -38,7 +43,7 @@ def div_by_tf(n):
 
 if __name__ == "__main__":
 
-    N = int(input("Enter your N: "))
+    N = int(input("I will show you numbers that 0(mod 3 and 4) for your N: "))
 
     divisbles = [i for i in div_by_tf(N)]
 
@@ -56,9 +61,11 @@ def squares(a,b):
 if __name__ == "__main__":
 
     print("squares using square generator such that apply a and b arguments")
+    print("a = 1, b =10")
     for i in squares(1,10):
         print(i, end=" ")
-    print('\n')
+
+    print('\n' * 3)
 
 #five
 
