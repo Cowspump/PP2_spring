@@ -1,0 +1,85 @@
+CREATE OR REPLACE FUNCTION search_records_pattern(IN filter INT) RETURNS TABLE (
+    result TEXT
+) AS $$
+BEGIN
+    IF filter = 1 THEN
+        RETURN QUERY SELECT 'id: ' || id || ', name: ' || firstname || ' ' || substring(lastname from 1 for 1) || '., phone: ' || substr(phone, 1, 8) || '####' AS result FROM users;
+    ELSIF filter = 2 THEN
+        RETURN QUERY SELECT 'Name: ' || firstname || ' ' || substring(lastname from 1 for 1) || '., phone: ' || substr(phone, 1, 8) || '####' AS result FROM users;
+    ELSIF filter = 3 THEN
+        RETURN QUERY SELECT 'Name: ' || firstname || ' ' || substring(lastname from 1 for 1) || '.' AS result FROM users;
+    ELSIF filter = 4 THEN
+        RETURN QUERY SELECT 'Phone: ' || phone AS result FROM users;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE PROCEDURE insert_or_update_user(
+    fname TEXT,
+    lname TEXT,
+    ph TEXT
+) AS $$
+BEGIN
+    IF EXISTS(SELECT 1 FROM users WHERE lastname = lname) THEN
+        UPDATE users SET phone = ph WHERE lastname = lname AND firstname = fname;
+    ELSE
+        INSERT INTO users (firstname, lastname, phone) VALUES (fname, lname, ph);
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE PROCEDURE insert_multiple_users(
+    csv TEXT[]
+) AS $$
+DECLARE
+    i INT;
+    fname TEXT;
+    lname TEXT;
+    ph TEXT;
+BEGIN
+    FOR i IN 1..array_length(csv, 1) LOOP
+        fname := csv[i][1];
+        lname := csv[i][2];
+        ph := csv[i][3];
+
+        IF length(ph) <> 12 THEN
+            RAISE EXCEPTION 'Incorrect phone number format for user: %', csv[i];
+        ELSE
+            IF EXISTS(SELECT 1 FROM users WHERE firstname = fname AND lastname = lname) THEN
+                UPDATE users SET phone = ph WHERE firstname = fname AND lastname = lname;
+            ELSE
+                INSERT INTO users (firstname, lastname, phone) VALUES (fname, lname, ph);
+            END IF;
+        END IF;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_records_with_pagination(
+    limit_val INT,
+    offset_val INT
+) RETURNS TABLE (
+    firstname VARCHAR(50),
+    lastname VARCHAR(50),
+    phone VARCHAR(12)
+) AS $$
+BEGIN
+    RETURN QUERY SELECT users.firstname, users.lastname, users.phone FROM users
+    LIMIT limit_val
+    OFFSET offset_val;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE PROCEDURE delete_records(
+    lname TEXT,
+    ph TEXT
+) AS $$
+BEGIN
+    DELETE FROM users WHERE lastname = lname AND phone = ph;
+END;
+$$ LANGUAGE plpgsql;
